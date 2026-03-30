@@ -103,22 +103,22 @@
             <h1 class="text-xl font-bold text-white leading-tight tracking-wide">Topvalue<br><span class="text-indigo-400 text-sm font-medium">CRM Activation BRD</span></h1>
         </div>
         <div class="flex-1 overflow-y-auto py-4" id="nav-menu">
-            <button data-target="overview" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors bg-slate-800 text-white border-l-4 border-indigo-500 font-medium">1. บทสรุปผู้บริหาร (Overview)</button>
+            <button data-target="overview" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors bg-slate-800 text-white border-l-4 border-indigo-500 font-medium">1. Overview</button>
             <button data-target="process" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">2. กระบวนการ (Process Flow)</button>
             <button data-target="tech" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">3. ข้อมูลระบบ (Tech & Data)</button>
             <button data-target="ux" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">4. ประสบการณ์ผู้ใช้ (UX/UI)</button>
-            <button data-target="requirements" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">5. ข้อกำหนด & บทบาท BA</button>
+            <button data-target="requirements" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">5. ข้อกำหนด & การดำเนินการเชิงกลยุทธ์</button>
         </div>
     </nav>
 
     <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center fixed top-0 w-full z-50 shadow-md">
         <h1 class="font-bold text-lg">Topvalue CRM Activation</h1>
         <select id="mobile-nav" class="bg-slate-800 text-white border border-slate-700 rounded p-1 text-sm outline-none">
-            <option value="overview">1. บทสรุปผู้บริหาร</option>
+            <option value="overview">1. Overview</option>
             <option value="process">2. กระบวนการ (Flow)</option>
             <option value="tech">3. ข้อมูลระบบ (Data)</option>
             <option value="ux">4. ประสบการณ์ (UX)</option>
-            <option value="requirements">5. ข้อกำหนด (Reqs)</option>
+            <option value="requirements">5. ข้อกำหนด & กลยุทธ์</option>
         </select>
     </div>
 
@@ -126,7 +126,7 @@
         
         <section id="overview" class="section-content active max-w-5xl mx-auto">
             <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-800 mb-2">บทสรุปผู้บริหารและคุณค่าทางธุรกิจ</h2>
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Overview and Business Value</h2>
                 <p class="text-slate-600 leading-relaxed">ส่วนนี้ให้ภาพรวมของปัญหาทางธุรกิจที่พบ และโซลูชันที่นำเสนอเพื่อเปลี่ยนลูกค้าจาก Marketplace ให้กลายเป็นลูกค้าในระบบ CRM ของ Topvalue อย่างสมบูรณ์ พร้อมแสดงดัชนีชี้วัดความสำเร็จ (KPIs) ที่คาดหวัง</p>
             </div>
 
@@ -539,8 +539,8 @@
 
         <section id="requirements" class="section-content max-w-5xl mx-auto pb-20">
             <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-800 mb-2">ข้อกำหนดทางธุรกิจ & บทบาท BA</h2>
-                <p class="text-slate-600 leading-relaxed">ส่วนนี้สรุปกฎเกณฑ์ในการทำงานของระบบ (Business Rules) ข้อกำหนดเพื่อการติดตามผล (Analytics Tracking) และสรุปบทบาทหน้าที่ของ Business Analyst ในโครงการนี้</p>
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">ข้อกำหนดทางธุรกิจ & การดำเนินการเชิงกลยุทธ์</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้สรุปกฎเกณฑ์ในการทำงานของระบบ (Business Rules) ข้อกำหนดเพื่อการติดตามผล (Analytics Tracking) และสรุปบทบาทหน้าที่ของการดำเนินการเชิงกลยุทธ์ในโครงการนี้</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -568,43 +568,48 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">The Role of Business Analyst</h3>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Strategic Execution (บทบาทและการดำเนินการเชิงกลยุทธ์)</h3>
                     <div class="bg-slate-800 text-slate-300 p-6 rounded-xl shadow-md">
-                        <p class="text-sm mb-4 text-slate-400">ในฐานะ Technical Business Analyst บทบาทและการใช้เครื่องมือประกอบด้วย:</p>
+                        <p class="text-sm mb-4 text-slate-400">ในฐานะผู้นำการวิเคราะห์และประสานงานระบบ บทบาทและการดำเนินการเชิงกลยุทธ์ประกอบด้วย:</p>
                         <ul class="space-y-4">
                             <li class="flex items-start">
                                 <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">1</span>
                                 <div>
-                                    <div class="font-bold text-white text-sm">Requirement Elicitation</div>
-                                    <div class="text-xs text-slate-400 mt-1">วิเคราะห์ความต้องการจากฝั่ง Marketing, CS, Tech Team เพื่อปิดช่องโหว่ด้าน Data Retention</div>
+                                    <div class="font-bold text-white text-sm">Requirement Orchestration</div>
+                                    <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">บริหารจัดการความต้องการของระบบ</div>
+                                    <div class="text-xs text-slate-400">เป็นแกนนำในการรวบรวมและวิเคราะห์ความต้องการจากผู้มีส่วนได้ส่วนเสียทุกฝ่าย (Marketing, Operations, Customer Service และ Development) เพื่อผสานเป้าหมายทางธุรกิจเข้ากับความเป็นไปได้ทางเทคนิค (Technical Feasibility)</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">2</span>
                                 <div>
-                                    <div class="font-bold text-white text-sm">Process & Diagram Design</div>
-                                    <div class="text-xs text-slate-400 mt-1">ออกแบบ Business Flow / System Logic <span class="text-indigo-300">[Lucidchart / Draw.io]</span></div>
+                                    <div class="font-bold text-white text-sm">Journey Analysis & Workflow Design</div>
+                                    <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">วิเคราะห์และออกแบบระบบ</div>
+                                    <div class="text-xs text-slate-400">วิเคราะห์ Customer Journey จากฝั่ง Marketplace เพื่อระบุช่องโหว่ของการเก็บข้อมูลลูกค้า (Data & Retention Gaps) และออกแบบโครงสร้างการทำงาน (Workflow) ใหม่สำหรับระบบ CRM และ Loyalty อย่างไร้รอยต่อ</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">3</span>
                                 <div>
-                                    <div class="font-bold text-white text-sm">Data Analysis & Mapping</div>
-                                    <div class="text-xs text-slate-400 mt-1">แมปปิ้งระหว่าง Marketplace API & CRM Database <span class="text-indigo-300">[Excel / Postman]</span></div>
+                                    <div class="font-bold text-white text-sm">Business-to-Tech Translation</div>
+                                    <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">แปลงกลยุทธ์เป็นเอกสารทางเทคนิค</div>
+                                    <div class="text-xs text-slate-400">ถอดรหัส Business Logic ที่ซับซ้อนให้อยู่ในรูปแบบ AS-IS & TO-BE Process Flows, User Stories, Business Rules และ UAT Scenarios เพื่อให้ทีมพัฒนาเข้าใจโครงสร้างและขอบเขตงานอย่างชัดเจน</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">4</span>
                                 <div>
-                                    <div class="font-bold text-white text-sm">UX/UI Prototyping</div>
-                                    <div class="text-xs text-slate-400 mt-1">วาด Wireframes แสดง User Journey <span class="text-indigo-300">[Figma / Balsamiq]</span></div>
+                                    <div class="font-bold text-white text-sm">Feature Definition & Data Logic</div>
+                                    <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">กำหนดโครงสร้างฟีเจอร์และข้อมูล</div>
+                                    <div class="text-xs text-slate-400">ออกแบบ Requirement เชิงลึกสำหรับฟีเจอร์หลัก เช่น ระบบตรวจสอบคำสั่งซื้อข้ามแพลตฟอร์ม (Order Verification), การเชื่อมโยงบัญชีสมาชิก, โลจิกการจ่ายรางวัล (Reward Logic) และวางโครงสร้าง Analytics Tracking</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">5</span>
                                 <div>
-                                    <div class="font-bold text-white text-sm">Agile Management & UAT</div>
-                                    <div class="text-xs text-slate-400 mt-1">เขียน User Stories, Acceptance Criteria จัดการ Project <span class="text-indigo-300">[Jira]</span> พร้อมวางแผนทดสอบระบบ</div>
+                                    <div class="font-bold text-white text-sm">Bridging the Technical Gap</div>
+                                    <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">เชื่อมโยงฝั่งธุรกิจและระบบหลังบ้าน</div>
+                                    <div class="text-xs text-slate-400">ทำหน้าที่เป็นศูนย์กลางประสานงานข้ามสายงาน (Cross-functional alignment) โดยดูแลความถูกต้องของการออกแบบ Data Mapping และ API Integration เพื่อให้มั่นใจว่าระบบพร้อมสำหรับการนำไปพัฒนาจริง</div>
                                 </div>
                             </li>
                         </ul>
