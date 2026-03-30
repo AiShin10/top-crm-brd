@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive BRD: Topvalue CRM Activation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        <!-- Chosen Palette: Slate background (#f8fafc), Indigo accent (#4f46e5) for primary actions, Emerald (#10b981) for success/growth, Amber (#f59e0b) for transitions/warnings. -->
+        <!-- Application Structure Plan: Designed as an "Interactive Command Center" with a sidebar navigation. This allows stakeholders to jump directly to their area of interest (Business Overview, Process Flow, Tech Specs, UX Mockups) without endless scrolling. It transforms a static document into an explorable dashboard, enhancing usability and engagement. -->
+        <!-- Visualization & Content Choices: 1. Overview: Radar Chart (Chart.js) to show expected KPI impact (No SVG). 2. Process Flow: CSS Grid/Flexbox nodes with Unicode arrows for interactivity and step-by-step exploration (No Mermaid/SVG). 3. Data Specs: Interactive HTML Table with JS filtering. 4. UX/UI: Interactive HTML mock-device container to simulate the user journey practically. -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .section-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flow-node {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .flow-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .phone-container {
+            width: 320px;
+            height: 600px;
+            border: 12px solid #334155;
+            border-radius: 36px;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: #f1f5f9;
+            display: none;
+        }
+
+        .phone-screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-slate-50">
+
+    <nav class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 hidden md:flex flex-col">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-white leading-tight tracking-wide">Topvalue<br><span class="text-indigo-400 text-sm font-medium">CRM Activation BRD</span></h1>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4" id="nav-menu">
+            <button data-target="overview" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors bg-slate-800 text-white border-l-4 border-indigo-500 font-medium">1. บทสรุปผู้บริหาร (Overview)</button>
+            <button data-target="process" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">2. กระบวนการ (Process Flow)</button>
+            <button data-target="tech" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">3. ข้อมูลระบบ (Tech & Data)</button>
+            <button data-target="ux" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">4. ประสบการณ์ผู้ใช้ (UX/UI)</button>
+            <button data-target="requirements" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">5. ข้อกำหนด & บทบาท BA</button>
+        </div>
+    </nav>
+
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center fixed top-0 w-full z-50 shadow-md">
+        <h1 class="font-bold text-lg">Topvalue CRM Activation</h1>
+        <select id="mobile-nav" class="bg-slate-800 text-white border border-slate-700 rounded p-1 text-sm outline-none">
+            <option value="overview">1. บทสรุปผู้บริหาร</option>
+            <option value="process">2. กระบวนการ (Flow)</option>
+            <option value="tech">3. ข้อมูลระบบ (Data)</option>
+            <option value="ux">4. ประสบการณ์ (UX)</option>
+            <option value="requirements">5. ข้อกำหนด (Reqs)</option>
+        </select>
+    </div>
+
+    <main class="flex-1 overflow-y-auto p-6 md:p-10 pt-20 md:pt-10">
+        
+        <section id="overview" class="section-content active max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">บทสรุปผู้บริหารและคุณค่าทางธุรกิจ</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้ให้ภาพรวมของปัญหาทางธุรกิจที่พบ และโซลูชันที่นำเสนอเพื่อเปลี่ยนลูกค้าจาก Marketplace ให้กลายเป็นลูกค้าในระบบ CRM ของ Topvalue อย่างสมบูรณ์ พร้อมแสดงดัชนีชี้วัดความสำเร็จ (KPIs) ที่คาดหวัง</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xl mr-3">!</div>
+                        <h3 class="text-xl font-bold text-slate-800">Problem Statement</h3>
+                    </div>
+                    <p class="text-slate-600 mb-4">ปัจจุบัน Topvalue มียอดขายจำนวนมากผ่านช่องทาง Marketplace (Shopee, Lazada) แต่ขาดกระบวนการดึงลูกค้ากลุ่มนี้กลับมาเป็นฐานข้อมูลของบริษัท (First-party Data)</p>
+                    <ul class="text-sm text-slate-500 space-y-2">
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> เสียโอกาสทำ Personalized Marketing</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ลูกค้าขาดแรงจูงใจในการซื้อซ้ำบนเว็บไซต์หลัก</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ข้อมูลลูกค้ากระจัดกระจาย</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mr-3">&#10003;</div>
+                        <h3 class="text-xl font-bold text-slate-800">Proposed Solution</h3>
+                    </div>
+                    <p class="text-slate-600 mb-4">ออกแบบ Customer Journey ใหม่โดยใช้ช่องทาง LINE OA เป็นสะพานเชื่อม นำเสนอสิทธิประโยชน์เพื่อจูงใจให้ลูกค้านำเลขคำสั่งซื้อมายืนยันและสมัครสมาชิก</p>
+                    <ul class="text-sm text-slate-500 space-y-2">
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> แจก Loyalty Coins เป็นแรงจูงใจ</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> ลงทะเบียนรับประกันสินค้า (Warranty)</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> สมัครสมาชิก Topvalue.com แบบไร้รอยต่อ</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">Expected Business Impact (KPIs)</h3>
+                <p class="text-sm text-center text-slate-500 mb-6">กราฟแสดงการคาดการณ์การเติบโตเชิงเปรียบเทียบใน 4 มิติหลักเมื่อใช้งานระบบใหม่</p>
+                
+                <div class="chart-container">
+                    <canvas id="kpiChart"></canvas>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                    <div class="text-center p-3 bg-indigo-50 rounded-lg">
+                        <div class="font-bold text-indigo-700 text-lg">Conversion Rate</div>
+                        <div class="text-xs text-slate-600 mt-1">Marketplace &rarr; Member</div>
+                    </div>
+                    <div class="text-center p-3 bg-emerald-50 rounded-lg">
+                        <div class="font-bold text-emerald-700 text-lg">Retention</div>
+                        <div class="text-xs text-slate-600 mt-1">Warranty & Coin Usage</div>
+                    </div>
+                    <div class="text-center p-3 bg-amber-50 rounded-lg">
+                        <div class="font-bold text-amber-700 text-lg">Revenue</div>
+                        <div class="text-xs text-slate-600 mt-1">Repeat Purchase on Web</div>
+                    </div>
+                    <div class="text-center p-3 bg-sky-50 rounded-lg">
+                        <div class="font-bold text-sky-700 text-lg">Efficiency</div>
+                        <div class="text-xs text-slate-600 mt-1">ลด Manual Support CS</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="section-content max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">แผนภาพกระบวนการทำงาน (Process Flow)</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้แสดงการเปรียบเทียบกระบวนการทำงานแบบเดิม (AS-IS) ที่สูญเสียข้อมูลลูกค้า และกระบวนการเป้าหมาย (TO-BE) ที่สร้าง Loyalty Loop เลือกแท็บด้านล่างเพื่อสลับมุมมองและคลิกที่กล่องเพื่อดูรายละเอียด</p>
+            </div>
+
+            <div class="flex justify-center mb-8">
+                <div class="bg-slate-200 p-1 rounded-lg inline-flex">
+                    <button id="btn-asis" class="px-6 py-2 rounded-md font-medium text-sm transition-all bg-white shadow text-indigo-600">AS-IS (ปัจจุบัน)</button>
+                    <button id="btn-tobe" class="px-6 py-2 rounded-md font-medium text-sm transition-all text-slate-500 hover:text-slate-700">TO-BE (เป้าหมาย)</button>
+                </div>
+            </div>
+
+            <div id="flow-asis" class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center min-h-[400px]">
+                <h3 class="text-lg font-bold text-slate-700 mb-8 w-full text-left">กระบวนการปัจจุบัน: ข้อมูลไม่เชื่อมต่อ</h3>
+                
+                <div class="flex flex-col md:flex-row items-center gap-4 w-full justify-center">
+                    <div class="flow-node bg-slate-100 border-2 border-slate-300 p-4 rounded-full w-24 h-24 flex items-center justify-center text-center font-bold text-slate-700 z-10" onclick="showFlowInfo('ลูกค้าซื้อสินค้า', 'ลูกค้าทำการสั่งซื้อผ่านแพลตฟอร์มภายนอก')">ลูกค้า</div>
+                    
+                    <div class="hidden md:flex flex-col items-center justify-center text-slate-400 font-bold px-2">
+                        <span class="text-xs mb-1">1. ซื้อสินค้า / 2. จัดส่ง</span>
+                        <span>&#10231;</span>
+                    </div>
+                    <div class="md:hidden text-slate-400 font-bold py-2">&#8595;</div>
+
+                    <div class="flow-node bg-rose-50 border-2 border-rose-300 p-4 rounded-xl w-40 text-center shadow-sm z-10" onclick="showFlowInfo('Shopee / Lazada', 'แพลตฟอร์ม Marketplace เป็นผู้ถือข้อมูลการสั่งซื้อและข้อมูลลูกค้าไว้ทั้งหมด')">
+                        <div class="font-bold text-rose-700">Shopee / Lazada</div>
+                        <div class="text-xs text-rose-600 mt-1">เก็บข้อมูลลูกค้า</div>
+                    </div>
+
+                    <div class="hidden md:flex flex-col items-center justify-center text-rose-400 font-bold px-4">
+                        <span class="text-xs mb-1 text-rose-500">ไม่มีการเชื่อมต่อ</span>
+                        <span class="text-2xl">&#10006;</span>
+                    </div>
+                    <div class="md:hidden text-rose-400 font-bold py-2 text-2xl">&#10006;</div>
+
+                    <div class="flow-node bg-slate-100 border-2 border-slate-300 p-4 rounded-xl w-40 text-center opacity-60 z-10" onclick="showFlowInfo('Topvalue CRM', 'ระบบฐานข้อมูลของบริษัทไม่ได้รับรู้ถึงการมีอยู่ของลูกค้ารายนี้ ทำให้เสียโอกาสทางการตลาด')">
+                        <div class="font-bold text-slate-500">Topvalue CRM</div>
+                        <div class="text-xs text-slate-400 mt-1">เว็บไซต์หลัก</div>
+                    </div>
+                </div>
+
+                <div id="flow-info-box" class="mt-12 p-4 bg-indigo-50 border border-indigo-100 rounded-lg w-full max-w-2xl text-center text-indigo-800 text-sm hidden">
+                    คลิกที่กล่องข้อความเพื่อดูรายละเอียด
+                </div>
+            </div>
+
+            <div id="flow-tobe" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden flex-col items-center min-h-[400px]">
+                <h3 class="text-lg font-bold text-slate-700 mb-6 w-full text-left">กระบวนเป้าหมาย: สร้าง Loyalty Loop</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl relative">
+                    
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 relative">
+                        <div class="absolute -top-3 left-4 bg-white px-2 text-xs font-bold text-slate-500 border border-slate-200 rounded">1. Acquisition</div>
+                        <div class="flex flex-col items-center gap-3 mt-4">
+                            <div class="flow-node bg-white border border-slate-300 px-4 py-2 rounded-full text-sm font-bold shadow-sm" onclick="showFlowInfo2('ลูกค้าซื้อสินค้า', 'ลูกค้าเริ่มต้นจาก Marketplace เช่นเดิม')">ลูกค้า</div>
+                            <div class="text-slate-400 text-xs">&#8595; ซื้อสินค้า</div>
+                            <div class="flow-node bg-white border border-slate-300 px-4 py-2 rounded shadow-sm w-full text-center text-sm" onclick="showFlowInfo2('Marketplace', 'คำสั่งซื้อสำเร็จบน Shopee/Lazada')">Shopee / Lazada</div>
+                            <div class="text-emerald-500 text-xs font-bold">&#8595; Scan QR (กล่องพัสดุ)</div>
+                            <div class="flow-node bg-emerald-500 text-white px-4 py-3 rounded-lg shadow-md w-full text-center font-bold text-sm" onclick="showFlowInfo2('LINE OA', 'จุดเชื่อมต่อแรก ลูกค้าแอดไลน์เพื่อรับสิทธิ์')">LINE OA Topvalue</div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex items-center justify-center text-slate-300 text-2xl absolute left-[31%] top-1/2 transform -translate-y-1/2">&#10232;</div>
+
+                    <div class="border border-indigo-200 rounded-xl p-4 bg-indigo-50 relative">
+                        <div class="absolute -top-3 left-4 bg-indigo-100 px-2 text-xs font-bold text-indigo-700 border border-indigo-200 rounded">2. Verification</div>
+                        <div class="flex flex-col items-center gap-3 mt-4">
+                            <div class="flow-node bg-white border border-indigo-300 px-4 py-2 rounded shadow-sm w-full text-center text-sm text-indigo-800" onclick="showFlowInfo2('กรอก Order', 'ลูกค้ากด Rich Menu และกรอกเลขคำสั่งซื้อ')">กรอก Order Number</div>
+                            <div class="text-indigo-400 text-xs">&#8595;</div>
+                            <div class="flow-node bg-amber-100 border border-amber-300 px-4 py-2 rounded-lg shadow-sm w-full text-center text-sm font-bold text-amber-800" onclick="showFlowInfo2('API Verification', 'ระบบตรวจสอบ API ว่า Order ถูกต้อง และยังไม่เคยใช้สิทธิ์ (กัน Duplicate)')">API ตรวจสอบ Order</div>
+                            <div class="flex w-full justify-between text-[10px] text-slate-500 px-2">
+                                <span>&#8601; Invalid</span>
+                                <span>Valid &#8600;</span>
+                            </div>
+                            <div class="flex w-full gap-2">
+                                <div class="bg-slate-200 px-2 py-1 rounded text-[10px] w-1/2 text-center text-slate-600">Error</div>
+                                <div class="bg-indigo-600 text-white px-2 py-1 rounded text-[10px] w-1/2 text-center font-bold cursor-pointer hover:bg-indigo-700 transition-colors" onclick="showFlowInfo2('Register/Login', 'ถ้าเป็นสมาชิกแล้วให้ Login ถ้ายังให้ Register ผูกบัญชี')">Register / Login</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex items-center justify-center text-indigo-300 text-2xl absolute right-[31%] top-1/2 transform -translate-y-1/2">&#10232;</div>
+
+                    <div class="border border-emerald-200 rounded-xl p-4 bg-emerald-50 relative">
+                        <div class="absolute -top-3 left-4 bg-emerald-100 px-2 text-xs font-bold text-emerald-700 border border-emerald-200 rounded">3. Loyalty Loop</div>
+                        <div class="flex flex-col items-center gap-3 mt-4">
+                            <div class="flow-node bg-white border border-emerald-300 px-4 py-2 rounded shadow-sm w-full text-center text-sm font-bold text-emerald-700" onclick="showFlowInfo2('มอบ Coins', 'ระบบคำนวณยอดซื้อและมอบ Coins เข้า CRM Wallet ของลูกค้า')">ระบบมอบ Coins เข้า CRM</div>
+                            <div class="text-emerald-400 text-xs">&#8595;</div>
+                            <div class="flow-node bg-white border border-emerald-300 px-4 py-2 rounded shadow-sm w-full text-center text-xs text-emerald-800" onclick="showFlowInfo2('แลกสิทธิ์', 'ลูกค้าได้ First-party Experience สามารถลงทะเบียนรับประกัน หรือแลกคูปอง')">แลก Coupon / ลงประกัน</div>
+                            <div class="text-emerald-500 font-bold text-xl">&#8595;</div>
+                            <div class="flow-node bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-md w-full text-center font-bold text-sm" onclick="showFlowInfo2('ซื้อซ้ำ', 'เป้าหมายหลัก ลูกค้ากลับมาซื้อสินค้าบนเว็บไซต์โดยตรงด้วยคูปองที่ได้')">กลับมาซื้อซ้ำบน Website</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="flow-info-box-2" class="mt-8 p-4 bg-indigo-50 border border-indigo-100 rounded-lg w-full max-w-4xl text-center text-indigo-800 text-sm h-16 flex items-center justify-center transition-all">
+                    คลิกที่กล่องกระบวนการเพื่อดูคำอธิบายโดยละเอียด
+                </div>
+            </div>
+        </section>
+
+        <section id="tech" class="section-content max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">ข้อมูลระบบและเทคนิค (System & Data)</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้แสดงโครงสร้าง Data Mapping เพื่อนำข้อมูลจาก Marketplace เข้าสู่ระบบ Topvalue CRM และตาราง Use Case Interaction</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h3 class="text-xl font-bold text-slate-800">1. Data Mapping</h3>
+                    <div class="relative w-full md:w-64">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">&#128269;</span>
+                        <input type="text" id="data-search" placeholder="ค้นหาฟิลด์ข้อมูล..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="mapping-table">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-sm border-b border-slate-200">
+                                <th class="p-4 font-semibold">Source Field (Marketplace)</th>
+                                <th class="p-4 font-semibold">Target Field (CRM)</th>
+                                <th class="p-4 font-semibold">Type</th>
+                                <th class="p-4 font-semibold">Business Rules / Logic</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-slate-700 divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">order_sn</td>
+                                <td class="p-4 font-mono text-emerald-600">marketplace_order_id</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">String</span></td>
+                                <td class="p-4">ใช้เป็น Primary Key ในการ Verify <strong class="text-rose-500">ห้ามซ้ำ (Unique)</strong></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">platform_name</td>
+                                <td class="p-4 font-mono text-emerald-600">source_platform</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">Enum</span></td>
+                                <td class="p-4">"Shopee", "Lazada", "TikTok"</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">buyer_user_name</td>
+                                <td class="p-4 font-mono text-emerald-600">marketplace_username</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">String</span></td>
+                                <td class="p-4">เก็บเป็น Reference เท่านั้น</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">order_status</td>
+                                <td class="p-4 font-mono text-emerald-600">eligibility_status</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">String</span></td>
+                                <td class="p-4">ต้อง = 'COMPLETED' เท่านั้นถึงจะแจก Coin ได้</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">item_sku</td>
+                                <td class="p-4 font-mono text-emerald-600">purchased_items</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">Array</span></td>
+                                <td class="p-4">นำไปผูกกับระบบ Warranty Activation อัตโนมัติ</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-mono text-indigo-600">order_total_amount</td>
+                                <td class="p-4 font-mono text-emerald-600">order_value</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">Decimal</span></td>
+                                <td class="p-4">ใช้คำนวณ Loyalty Coins (เช่น 100 บาท = 1 Coin)</td>
+                            </tr>
+                            <tr class="hover:bg-amber-50 bg-slate-50 transition-colors border-t-2 border-slate-200">
+                                <td class="p-4 text-amber-600 italic">*User Input via Web*</td>
+                                <td class="p-4 font-mono text-emerald-600">member_id</td>
+                                <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">String</span></td>
+                                <td class="p-4 font-medium">สร้างเมื่อลูกค้า Register/Login ผูกกับ order_id ให้สมบูรณ์</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="no-results" class="hidden text-center p-6 text-slate-500">ไม่พบข้อมูลที่ค้นหา</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-6">2. System Interaction (Actor Mapping)</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="font-bold text-indigo-600 mb-3 flex items-center"><span class="text-2xl mr-2">&#128100;</span> ลูกค้า (Customer)</div>
+                        <ul class="text-sm space-y-2 text-slate-600 list-disc pl-5">
+                            <li>กรอกหมายเลขคำสั่งซื้อ</li>
+                            <li>สมัคร / เข้าสู่ระบบเว็บไซต์</li>
+                            <li>แลก Coin เป็น Coupon</li>
+                            <li>ลงทะเบียนรับประกันสินค้า</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                        <div class="font-bold text-slate-800 mb-3 flex items-center"><span class="text-2xl mr-2">&#128187;</span> ระบบ (CRM/Loyalty)</div>
+                        <ul class="text-sm space-y-2 text-slate-700 list-disc pl-5">
+                            <li>ตรวจสอบสิทธิ์ ป้องกันการใช้ซ้ำ (Include)</li>
+                            <li>คำนวณและแจก Loyalty Coins</li>
+                            <li>ส่ง Tracking Events (GA4/GTM)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="font-bold text-emerald-600 mb-3 flex items-center"><span class="text-2xl mr-2">&#128101;</span> ฝ่ายบริการ (CS)</div>
+                        <ul class="text-sm space-y-2 text-slate-600 list-disc pl-5">
+                            <li>ตรวจสอบประวัติการรับสิทธิ์</li>
+                            <li>แก้ปัญหา Manual Case เช่น กรอกเลขผิด</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ux" class="section-content max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">ประสบการณ์ผู้ใช้ (UX/UI Wireframes)</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้จำลอง Flow การทำงานจริงของลูกค้าผ่านโทรศัพท์มือถือ ลองคลิกปุ่มต่างๆ ในหน้าจอโทรศัพท์จำลองเพื่อดูการเปลี่ยนหน้าจอตาม User Journey ที่ออกแบบไว้</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-10 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                
+                <div class="w-full md:w-1/3 space-y-4">
+                    <div class="p-4 rounded-lg bg-indigo-50 border-l-4 border-indigo-500 cursor-pointer step-indicator" id="ind-1" onclick="switchPhoneScreen('screen1')">
+                        <h4 class="font-bold text-indigo-800">1. LINE OA Entry</h4>
+                        <p class="text-xs text-indigo-600 mt-1">จุดเริ่มต้น ลูกค้าเห็นข้อความต้อนรับและเมนูรับสิทธิ์</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-slate-50 border-l-4 border-slate-300 cursor-pointer step-indicator opacity-60 hover:opacity-100 transition-opacity" id="ind-2" onclick="switchPhoneScreen('screen2')">
+                        <h4 class="font-bold text-slate-700">2. Order Verification</h4>
+                        <p class="text-xs text-slate-500 mt-1">หน้า Web View ให้ลูกค้ายืนยันรหัสคำสั่งซื้อ</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-slate-50 border-l-4 border-slate-300 cursor-pointer step-indicator opacity-60 hover:opacity-100 transition-opacity" id="ind-3" onclick="switchPhoneScreen('screen3')">
+                        <h4 class="font-bold text-slate-700">3. Member Dashboard</h4>
+                        <p class="text-xs text-slate-500 mt-1">หน้าแดชบอร์ดแสดงยอดเหรียญและประกันที่ลงทะเบียนสำเร็จ</p>
+                    </div>
+                    
+                    <button class="mt-8 w-full py-2 bg-slate-800 text-white rounded shadow hover:bg-slate-700 transition-colors text-sm font-bold" onclick="switchPhoneScreen('screen1')">&#8634; เริ่มกระบวนการใหม่</button>
+                </div>
+
+                <div class="phone-container">
+                    
+                    <div id="screen1" class="phone-screen active relative pb-16">
+                        <div class="bg-slate-800 text-white p-3 flex items-center justify-center font-bold text-sm shadow-md z-10 sticky top-0">
+                            &#8592; Topvalue.com (Official)
+                        </div>
+                        <div class="flex-1 p-4 flex flex-col justify-end space-y-4">
+                            <div class="bg-white p-3 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%] text-sm text-slate-700 border border-slate-100 relative self-start">
+                                <div class="absolute -top-5 left-1 text-xs text-slate-400">Bot</div>
+                                ขอบคุณที่ช้อปปิ้งกับเรา! 🎉<br>
+                                ลงทะเบียนรับประกันและรับ Coins ฟรี ได้ที่เมนูด้านล่างนี้เลยครับ &#128071;
+                            </div>
+                        </div>
+                        <div class="bg-white border-t border-slate-200 absolute bottom-0 w-full">
+                            <div class="bg-indigo-600 h-24 m-1 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-inner relative overflow-hidden">
+                                <div class="absolute inset-0 bg-black opacity-10"></div>
+                                <span class="relative z-10">&#128293; รับสิทธิ์ลูกค้าคนพิเศษ &#128293;</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1 p-1">
+                                <button onclick="switchPhoneScreen('screen2')" class="bg-slate-100 p-3 rounded text-center text-xs font-bold text-indigo-700 hover:bg-indigo-50 active:bg-indigo-100 border border-slate-200 transition-colors col-span-2">
+                                    &#128221; ยืนยันคำสั่งซื้อ / รับ Coin
+                                </button>
+                                <div class="bg-slate-100 p-3 rounded text-center text-xs text-slate-600 border border-slate-200">&#127942; เช็คแต้ม</div>
+                                <div class="bg-slate-100 p-3 rounded text-center text-xs text-slate-600 border border-slate-200">&#128128; แจ้งเคลม</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="screen2" class="phone-screen pb-4">
+                        <div class="bg-white border-b border-slate-200 p-3 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                            <span class="text-indigo-600 font-bold" onclick="switchPhoneScreen('screen1')">&#10005;</span>
+                            <span class="font-bold text-slate-800 text-sm">Topvalue.com</span>
+                            <span class="w-4"></span>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-bold text-slate-800 mb-1">&#128204; ยืนยันคำสั่งซื้อจาก Marketplace</h3>
+                            <p class="text-xs text-slate-500 mb-6">รับ Coins ฟรี และลงทะเบียนรับประกัน</p>
+
+                            <label class="block text-sm font-medium text-slate-700 mb-2">เลือกร้านค้าที่คุณสั่งซื้อ:</label>
+                            <div class="flex gap-3 mb-6">
+                                <label class="flex items-center p-3 border-2 border-orange-500 bg-orange-50 rounded-lg cursor-pointer flex-1">
+                                    <input type="radio" name="platform" checked class="mr-2 accent-orange-500">
+                                    <span class="text-sm font-bold text-orange-600">Shopee</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-slate-200 rounded-lg cursor-pointer flex-1 opacity-60">
+                                    <input type="radio" name="platform" class="mr-2">
+                                    <span class="text-sm font-bold text-blue-600">Lazada</span>
+                                </label>
+                            </div>
+
+                            <label class="block text-sm font-medium text-slate-700 mb-2">หมายเลขคำสั่งซื้อ (Order Number):</label>
+                            <input type="text" value="230915XXXXX" class="w-full border-2 border-indigo-200 p-3 rounded-lg mb-2 focus:outline-none focus:border-indigo-500 font-mono text-slate-700" readonly>
+                            <p class="text-[10px] text-slate-400 mb-8">*สามารถดูเลขคำสั่งซื้อได้ที่หน้ารายละเอียดคำสั่งซื้อในแอป</p>
+
+                            <button onclick="simulateApiCheck()" id="verify-btn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg shadow-md hover:bg-indigo-700 transition-colors relative overflow-hidden">
+                                ยืนยันเพื่อรับ Coins
+                            </button>
+                            <div id="api-loading" class="hidden text-center mt-3 text-xs text-indigo-600 font-medium animate-pulse">
+                                กำลังตรวจสอบข้อมูล API...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="screen3" class="phone-screen bg-slate-50 pb-4">
+                        <div class="bg-indigo-600 text-white p-4 pb-10 rounded-b-[2rem] shadow-md relative">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-bold text-sm">Topvalue.com</span>
+                                <span class="bg-white/20 px-2 py-1 rounded text-xs">&#128100; Profile</span>
+                            </div>
+                            <h2 class="text-xl font-bold">สวัสดีคุณ สมชาย,</h2>
+                            <p class="text-indigo-100 text-sm mt-1">ยินดีต้อนรับสู่ครอบครัว Topvalue</p>
+                            
+                            <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-4 w-11/12 flex justify-between items-center border border-slate-100">
+                                <div>
+                                    <div class="text-xs text-slate-500 font-medium">Coins ของคุณ</div>
+                                    <div class="text-2xl font-black text-amber-500 flex items-center mt-1">
+                                        <span class="text-lg mr-1">&#128176;</span> 150
+                                    </div>
+                                </div>
+                                <button class="bg-indigo-50 text-indigo-700 px-3 py-2 rounded text-xs font-bold border border-indigo-100">ประวัติการใช้งาน</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-14 px-4 space-y-4">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center mb-3">&#127873; คูปองที่แลกได้</h3>
+                                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-100 flex justify-between items-center mb-2">
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-700">ส่วนลด 100.-</div>
+                                        <div class="text-xs text-slate-400">ใช้ 100 Coins</div>
+                                    </div>
+                                    <button class="bg-slate-800 text-white px-3 py-1 rounded text-xs font-bold">แลก</button>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-100 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-700">ส่งฟรี</div>
+                                        <div class="text-xs text-slate-400">ใช้ 50 Coins</div>
+                                    </div>
+                                    <button class="bg-slate-800 text-white px-3 py-1 rounded text-xs font-bold">แลก</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center mb-3 mt-6">&#128119; สินค้าที่ลงทะเบียนรับประกันแล้ว</h3>
+                                <div class="bg-white p-3 rounded-lg shadow-sm border border-emerald-100 border-l-4 border-l-emerald-500 mb-2">
+                                    <div class="font-bold text-sm text-slate-700">ไมโครเวฟ รุ่น AB-123</div>
+                                    <div class="text-xs text-emerald-600 font-medium mt-1">รับประกันถึง 15 ก.ย. 2025</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="requirements" class="section-content max-w-5xl mx-auto pb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">ข้อกำหนดทางธุรกิจ & บทบาท BA</h2>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้สรุปกฎเกณฑ์ในการทำงานของระบบ (Business Rules) ข้อกำหนดเพื่อการติดตามผล (Analytics Tracking) และสรุปบทบาทหน้าที่ของ Business Analyst ในโครงการนี้</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Functional Requirements</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-01: Order Verification</div>
+                            <p class="text-sm text-slate-600">API ต้องตรวจสอบ Order ID กับฐานข้อมูลว่ามีอยู่จริง, ถูกต้อง, สถานะ Completed และต้อง <strong class="text-rose-500">บล็อกการใช้ซ้ำ (Duplicate Claim)</strong> อย่างเด็ดขาด</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-02: Member Authentication</div>
+                            <p class="text-sm text-slate-600">ระบบต้องรองรับ Seamless Login (เช่น LINE Login) หรือการสมัครใหม่ และจับคู่ Order ID เข้ากับ User ID ในระบบ CRM โดยอัตโนมัติ</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-03: Reward Logic</div>
+                            <p class="text-sm text-slate-600">เมื่อผูกสำเร็จ ระบบคำนวณ Coin ตาม Business Logic และเพิ่มยอดเข้า Wallet ทันที <strong class="text-amber-600">1 Order รับสิทธิ์ได้เพียง 1 ครั้งเท่านั้น</strong></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-emerald-300 transition-colors">
+                            <div class="font-bold text-emerald-700 text-sm mb-1">FR-04: Event Tracking (Analytics)</div>
+                            <p class="text-sm text-slate-600">ต้องฝัง GTM (Google Tag Manager) เพื่อเก็บ Events: <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">view_verification_page</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">verify_success</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">register_success</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">coin_redeemed</code> เพื่อวัดผล Attribution</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">The Role of Business Analyst</h3>
+                    <div class="bg-slate-800 text-slate-300 p-6 rounded-xl shadow-md">
+                        <p class="text-sm mb-4 text-slate-400">ในฐานะ Technical Business Analyst บทบาทและการใช้เครื่องมือประกอบด้วย:</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">1</span>
+                                <div>
+                                    <div class="font-bold text-white text-sm">Requirement Elicitation</div>
+                                    <div class="text-xs text-slate-400 mt-1">วิเคราะห์ความต้องการจากฝั่ง Marketing, CS, Tech Team เพื่อปิดช่องโหว่ด้าน Data Retention</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">2</span>
+                                <div>
+                                    <div class="font-bold text-white text-sm">Process & Diagram Design</div>
+                                    <div class="text-xs text-slate-400 mt-1">ออกแบบ Business Flow / System Logic <span class="text-indigo-300">[Lucidchart / Draw.io]</span></div>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">3</span>
+                                <div>
+                                    <div class="font-bold text-white text-sm">Data Analysis & Mapping</div>
+                                    <div class="text-xs text-slate-400 mt-1">แมปปิ้งระหว่าง Marketplace API & CRM Database <span class="text-indigo-300">[Excel / Postman]</span></div>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">4</span>
+                                <div>
+                                    <div class="font-bold text-white text-sm">UX/UI Prototyping</div>
+                                    <div class="text-xs text-slate-400 mt-1">วาด Wireframes แสดง User Journey <span class="text-indigo-300">[Figma / Balsamiq]</span></div>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 shrink-0">5</span>
+                                <div>
+                                    <div class="font-bold text-white text-sm">Agile Management & UAT</div>
+                                    <div class="text-xs text-slate-400 mt-1">เขียน User Stories, Acceptance Criteria จัดการ Project <span class="text-indigo-300">[Jira]</span> พร้อมวางแผนทดสอบระบบ</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let myChart = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('nav button');
+            const mobileNav = document.getElementById('mobile-nav');
+            
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.target.getAttribute('data-target');
+                    showSection(targetId);
+                    updateNavStyle(targetId);
+                    mobileNav.value = targetId;
+                });
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                showSection(e.target.value);
+                updateNavStyle(e.target.value);
+            });
+
+            document.getElementById('btn-asis').addEventListener('click', () => toggleFlow('asis'));
+            document.getElementById('btn-tobe').addEventListener('click', () => toggleFlow('tobe'));
+
+            document.getElementById('data-search').addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#mapping-table tbody tr');
+                let visibleCount = 0;
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if(text.includes(term)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+                document.getElementById('mapping-table').style.display = visibleCount === 0 ? 'none' : 'table';
+            });
+
+            initChart();
+        });
+
+        function showSection(id) {
+            document.querySelectorAll('.section-content').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            const activeSec = document.getElementById(id);
+            if(activeSec) {
+                activeSec.classList.add('active');
+            }
+
+            if (id === 'overview') {
+                if (myChart) {
+                    myChart.update();
+                } else {
+                    initChart();
+                }
+            }
+        }
+
+        function updateNavStyle(activeId) {
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white', 'border-indigo-500');
+                btn.classList.add('border-transparent');
+                
+                if(btn.getAttribute('data-target') === activeId) {
+                    btn.classList.add('bg-slate-800', 'text-white', 'border-indigo-500');
+                    btn.classList.remove('border-transparent');
+                }
+            });
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('kpiChart');
+            if(!ctx) return;
+            
+            if(myChart) myChart.destroy();
+
+            myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Conversion Rate', 'Retention (Warranty)', 'Revenue (Repeat)', 'Op Efficiency (CS)'],
+                    datasets: [{
+                        label: 'Before (AS-IS)',
+                        data: [20, 10, 15, 40],
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                        borderColor: 'rgba(148, 163, 184, 1)',
+                        pointBackgroundColor: 'rgba(148, 163, 184, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Expected Target (TO-BE)',
+                        data: [85, 90, 75, 95],
+                        backgroundColor: 'rgba(79, 70, 229, 0.3)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.05)' },
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            pointLabels: {
+                                font: { family: "'Prompt', sans-serif", size: 12 },
+                                color: '#475569'
+                            },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { family: "'Prompt', sans-serif" } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': Score ' + context.parsed.r + '/100';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleFlow(type) {
+            const btnAsis = document.getElementById('btn-asis');
+            const btnTobe = document.getElementById('btn-tobe');
+            const flowAsis = document.getElementById('flow-asis');
+            const flowTobe = document.getElementById('flow-tobe');
+
+            if (type === 'asis') {
+                btnAsis.className = "px-6 py-2 rounded-md font-medium text-sm transition-all bg-white shadow text-indigo-600";
+                btnTobe.className = "px-6 py-2 rounded-md font-medium text-sm transition-all text-slate-500 hover:text-slate-700";
+                flowAsis.style.display = "flex";
+                flowTobe.style.display = "none";
+            } else {
+                btnTobe.className = "px-6 py-2 rounded-md font-medium text-sm transition-all bg-white shadow text-indigo-600";
+                btnAsis.className = "px-6 py-2 rounded-md font-medium text-sm transition-all text-slate-500 hover:text-slate-700";
+                flowAsis.style.display = "none";
+                flowTobe.style.display = "flex";
+            }
+        }
+
+        function showFlowInfo(title, desc) {
+            const box = document.getElementById('flow-info-box');
+            box.style.display = 'block';
+            box.innerHTML = `<strong class="text-indigo-900">${title}:</strong> <span class="text-slate-700">${desc}</span>`;
+            box.classList.add('animate-pulse');
+            setTimeout(() => box.classList.remove('animate-pulse'), 300);
+        }
+
+        function showFlowInfo2(title, desc) {
+            const box = document.getElementById('flow-info-box-2');
+            box.innerHTML = `<div class="bg-white p-2 px-4 rounded shadow-sm border border-indigo-100 inline-block"><strong class="text-indigo-900">${title}:</strong> <span class="text-slate-700">${desc}</span></div>`;
+        }
+
+        function switchPhoneScreen(screenId) {
+            document.querySelectorAll('.phone-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            document.querySelectorAll('.step-indicator').forEach(i => {
+                i.classList.remove('bg-indigo-50', 'border-indigo-500', 'opacity-100');
+                i.classList.add('bg-slate-50', 'border-slate-300', 'opacity-60');
+                i.querySelector('h4').classList.remove('text-indigo-800');
+                i.querySelector('h4').classList.add('text-slate-700');
+                i.querySelector('p').classList.remove('text-indigo-600');
+                i.querySelector('p').classList.add('text-slate-500');
+            });
+
+            let indId = 'ind-1';
+            if(screenId === 'screen2') indId = 'ind-2';
+            if(screenId === 'screen3') indId = 'ind-3';
+
+            const activeInd = document.getElementById(indId);
+            activeInd.classList.remove('bg-slate-50', 'border-slate-300', 'opacity-60');
+            activeInd.classList.add('bg-indigo-50', 'border-indigo-500', 'opacity-100');
+            activeInd.querySelector('h4').classList.remove('text-slate-700');
+            activeInd.querySelector('h4').classList.add('text-indigo-800');
+            activeInd.querySelector('p').classList.remove('text-slate-500');
+            activeInd.querySelector('p').classList.add('text-indigo-600');
+
+            if(screenId === 'screen2') {
+                document.getElementById('verify-btn').innerHTML = 'ยืนยันเพื่อรับ Coins';
+                document.getElementById('verify-btn').classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                document.getElementById('verify-btn').classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                document.getElementById('api-loading').classList.add('hidden');
+            }
+        }
+
+        function simulateApiCheck() {
+            const btn = document.getElementById('verify-btn');
+            const loading = document.getElementById('api-loading');
+            
+            btn.innerHTML = '&#8987;';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            loading.classList.remove('hidden');
+
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                btn.innerHTML = '&#10004; ยืนยันสำเร็จ!';
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700', 'opacity-80', 'cursor-not-allowed');
+                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                
+                setTimeout(() => {
+                    switchPhoneScreen('screen3');
+                }, 800);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
