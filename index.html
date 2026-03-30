@@ -19,7 +19,7 @@
         
         <!-- Chosen Palette: Slate background (#f8fafc), Indigo accent (#4f46e5) for primary actions, Emerald (#10b981) for success/growth, Amber (#f59e0b) for transitions/warnings. -->
         <!-- Application Structure Plan: Designed as an "Interactive Command Center" with a sidebar navigation. This allows stakeholders to jump directly to their area of interest (Business Overview, Process Flow, Tech Specs, UX Mockups) without endless scrolling. It transforms a static document into an explorable dashboard, enhancing usability and engagement. -->
-        <!-- Visualization & Content Choices: 1. Overview: Radar Chart (Chart.js) to show expected KPI impact (No SVG). 2. Process Flow: CSS Grid/Flexbox nodes with Unicode arrows for interactivity and step-by-step exploration (No Mermaid/SVG). 3. Data Specs: Interactive HTML Table with JS filtering. 4. UX/UI: Interactive HTML mock-device container to simulate the user journey practically. -->
+        <!-- Visualization & Content Choices: 1. Overview: Radar Chart (Chart.js) to show expected KPI impact (No SVG). 2. Process Flow: CSS Grid/Flexbox nodes with Unicode arrows for interactivity and step-by-step exploration (No Mermaid/SVG). 3. Data Specs: Interactive HTML Table with JS filtering. 4. UX/UI: Interactive HTML mock-device container to simulate the user journey practically. 5. Requirements: Interactive Accordion for User Stories. -->
         <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
         .chart-container {
@@ -100,7 +100,7 @@
 
     <nav class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 hidden md:flex flex-col">
         <div class="p-6 border-b border-slate-800">
-            <h1 class="text-xl font-bold text-white leading-tight tracking-wide">Topvalue<br><span class="text-indigo-400 text-sm font-medium">CRM Activation BRD</span></h1>
+            <h1 class="text-xl font-bold text-white leading-tight tracking-wide">Topvalue<br><span class="text-indigo-400 text-sm font-medium">CRM Activation</span></h1>
         </div>
         <div class="flex-1 overflow-y-auto py-4" id="nav-menu">
             <button data-target="overview" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors bg-slate-800 text-white border-l-4 border-indigo-500 font-medium">1. Overview</button>
@@ -127,34 +127,85 @@
         <section id="overview" class="section-content active max-w-5xl mx-auto">
             <div class="mb-8">
                 <h2 class="text-3xl font-bold text-slate-800 mb-2">Overview and Business Value</h2>
-                <p class="text-slate-600 leading-relaxed">ส่วนนี้ให้ภาพรวมของปัญหาทางธุรกิจที่พบ และโซลูชันที่นำเสนอเพื่อเปลี่ยนลูกค้าจาก Marketplace ให้กลายเป็นลูกค้าในระบบ CRM ของ Topvalue อย่างสมบูรณ์ พร้อมแสดงดัชนีชี้วัดความสำเร็จ (KPIs) ที่คาดหวัง</p>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้ให้ภาพรวมของปัญหาทางธุรกิจที่พบ โซลูชันที่นำเสนอ ขอบเขตการทำงาน (Scope) และผู้มีส่วนได้ส่วนเสีย (Stakeholders) เพื่อเปลี่ยนลูกค้าจาก Marketplace ให้กลายเป็นลูกค้าในระบบ CRM ของ Topvalue อย่างสมบูรณ์</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
                     <div class="flex items-center mb-4">
                         <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xl mr-3">!</div>
                         <h3 class="text-xl font-bold text-slate-800">Problem Statement</h3>
                     </div>
-                    <p class="text-slate-600 mb-4">ปัจจุบัน Topvalue มียอดขายจำนวนมากผ่านช่องทาง Marketplace (Shopee, Lazada) แต่ขาดกระบวนการดึงลูกค้ากลุ่มนี้กลับมาเป็นฐานข้อมูลของบริษัท (First-party Data)</p>
+                    <p class="text-slate-600 mb-4 text-sm">ปัจจุบัน Topvalue มียอดขายจำนวนมากผ่านช่องทาง Marketplace แต่ลูกค้ากลุ่มนี้ไม่ได้ถูกเปลี่ยนให้เป็น first-party customer อย่างเป็นระบบ ทำให้เกิดข้อจำกัด:</p>
                     <ul class="text-sm text-slate-500 space-y-2">
-                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> เสียโอกาสทำ Personalized Marketing</li>
-                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ลูกค้าขาดแรงจูงใจในการซื้อซ้ำบนเว็บไซต์หลัก</li>
-                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ข้อมูลลูกค้ากระจัดกระจาย</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ข้อมูลลูกค้ากระจายอยู่ที่ Marketplace</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ทำ Retention และ Personalized Marketing ได้จำกัด</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> ลูกค้าไม่มีแรงจูงใจชัดเจนให้กลับมาซื้อซ้ำบนเว็บไซต์</li>
+                        <li class="flex items-start"><span class="text-rose-500 mr-2">&#10006;</span> การเชื่อมต่อระหว่าง Order, Warranty, Loyalty ยังไม่ต่อเนื่อง</li>
                     </ul>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
                     <div class="flex items-center mb-4">
                         <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mr-3">&#10003;</div>
-                        <h3 class="text-xl font-bold text-slate-800">Proposed Solution</h3>
+                        <h3 class="text-xl font-bold text-slate-800">Proposed Objective</h3>
                     </div>
-                    <p class="text-slate-600 mb-4">ออกแบบ Customer Journey ใหม่โดยใช้ช่องทาง LINE OA เป็นสะพานเชื่อม นำเสนอสิทธิประโยชน์เพื่อจูงใจให้ลูกค้านำเลขคำสั่งซื้อมายืนยันและสมัครสมาชิก</p>
+                    <p class="text-slate-600 mb-4 text-sm">เป้าหมายของ Use Case นี้คือการดึงลูกค้าที่ซื้อจาก Marketplace เข้ามาเป็นสมาชิก เพื่อสร้าง First-Party Data และทำธุรกิจวัดผลได้ครบขึ้น:</p>
                     <ul class="text-sm text-slate-500 space-y-2">
-                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> แจก Loyalty Coins เป็นแรงจูงใจ</li>
-                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> ลงทะเบียนรับประกันสินค้า (Warranty)</li>
-                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> สมัครสมาชิก Topvalue.com แบบไร้รอยต่อ</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> เพิ่มการสมัครสมาชิกจากลูกค้า Marketplace</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> เพิ่มการ Activate Warranty บนเว็บไซต์</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> สร้าง Loyalty Loop ผ่าน Coin และ Coupon</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">&#10004;</span> เพิ่ม Repeat Purchase บน Topvalue.com</li>
                     </ul>
+                </div>
+            </div>
+
+            <!-- Stakeholders & Scope -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Stakeholders</h3>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <strong class="text-indigo-700">Business:</strong>
+                            <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                <li>Marketing / CRM (ต้องการ Data & Retention)</li>
+                                <li>E-Commerce Manager (ต้องการยอด Conversion & ซื้อซ้ำ)</li>
+                                <li>Customer Service (ต้องการตรวจสอบข้อมูลได้ง่าย)</li>
+                                <li>Operations (ต้องการลดงาน Manual)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong class="text-indigo-700">Technical:</strong>
+                            <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                <li>Dev Team (พัฒนาระบบ Verify, Member, Logic)</li>
+                                <li>QA (ทดสอบระบบ, กันข้อมูลซ้ำ)</li>
+                                <li>Analytics Team (ตรวจสอบ Event Tracking)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Scope / Out of Scope</h3>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <strong class="text-emerald-600 flex items-center">In Scope:</strong>
+                            <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                <li>ลูกค้ากรอกเลขคำสั่งซื้อผ่าน LINE OA และระบบ Verify</li>
+                                <li>ระบบ Login/Register และผูก Order กับบัญชี</li>
+                                <li>ระบบมอบ Coin, แลกคูปอง, ลงทะเบียนรับประกัน</li>
+                                <li>ระบบ Track Key Events</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong class="text-rose-600 flex items-center">Out of Scope:</strong>
+                            <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                <li>การ Redesign Loyalty Engine ทั้งระบบ</li>
+                                <li>การเชื่อม ERP แบบเต็มรูปแบบทุกโมดูล</li>
+                                <li>Advanced Recommendation Engine</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -327,8 +378,8 @@
                                 <td class="p-4">"Shopee", "Lazada", "TikTok"</td>
                             </tr>
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 font-mono text-indigo-600">buyer_user_name</td>
-                                <td class="p-4 font-mono text-emerald-600">marketplace_username</td>
+                                <td class="p-4 font-mono text-indigo-600">buyer_email</td>
+                                <td class="p-4 font-mono text-emerald-600">user_email</td>
                                 <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs text-slate-500">String</span></td>
                                 <td class="p-4">เก็บเป็น Reference เท่านั้น</td>
                             </tr>
@@ -540,36 +591,196 @@
         <section id="requirements" class="section-content max-w-5xl mx-auto pb-20">
             <div class="mb-8">
                 <h2 class="text-3xl font-bold text-slate-800 mb-2">ข้อกำหนดทางธุรกิจ & การดำเนินการเชิงกลยุทธ์</h2>
-                <p class="text-slate-600 leading-relaxed">ส่วนนี้สรุปกฎเกณฑ์ในการทำงานของระบบ (Business Rules) ข้อกำหนดเพื่อการติดตามผล (Analytics Tracking) และสรุปบทบาทหน้าที่ของการดำเนินการเชิงกลยุทธ์ในโครงการนี้</p>
+                <p class="text-slate-600 leading-relaxed">ส่วนนี้สรุปกฎเกณฑ์ในการทำงานของระบบ (Business Rules) ข้อกำหนดเพื่อการติดตามผล (Analytics) และรายละเอียด User Stories เชิงลึก รวมถึงบทบาทหน้าที่ของการดำเนินการเชิงกลยุทธ์ในโครงการนี้</p>
             </div>
 
+            <!-- Functional Requirements Grid -->
+            <div class="mb-10">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Functional Requirements</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                        <div class="font-bold text-indigo-700 text-sm mb-1">FR-01: Order Verification</div>
+                        <p class="text-sm text-slate-600">รับเลขคำสั่งซื้อ, ตรวจสอบความถูกต้อง, และ <strong class="text-rose-500">บล็อกการใช้ซ้ำ (Duplicate Claim)</strong> อย่างเด็ดขาด</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                        <div class="font-bold text-indigo-700 text-sm mb-1">FR-02: Member Auth</div>
+                        <p class="text-sm text-slate-600">รองรับ Login/Register และผูก Order ID เข้ากับ User ID ในระบบ CRM อัตโนมัติ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-amber-300 transition-colors">
+                        <div class="font-bold text-amber-700 text-sm mb-1">FR-03: Loyalty Coin Award</div>
+                        <p class="text-sm text-slate-600">คำนวณและเพิ่มยอด Coin เข้า Wallet <strong class="text-amber-600">1 Order รับสิทธิ์ 1 ครั้งเท่านั้น</strong></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-emerald-300 transition-colors">
+                        <div class="font-bold text-emerald-700 text-sm mb-1">FR-04: Warranty Activation</div>
+                        <p class="text-sm text-slate-600">ลูกค้าสามารถ Activate Warranty โดยระบบจะผูกกับ Account และ Order อัตโนมัติ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-emerald-300 transition-colors">
+                        <div class="font-bold text-emerald-700 text-sm mb-1">FR-05: Coupon Redemption</div>
+                        <p class="text-sm text-slate-600">ลูกค้านำ Coin แลก Coupon ได้ ระบบต้อง Validate เงื่อนไขคูปองก่อนใช้งานจริง</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-sky-300 transition-colors">
+                        <div class="font-bold text-sky-700 text-sm mb-1">FR-06: Analytics Tracking</div>
+                        <p class="text-sm text-slate-600">ฝัง GTM ส่ง Events เพื่อใช้วัดผล Attribution และ Optimize แคมเปญ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Stories & Acceptance Criteria -->
+            <div class="mb-10">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">User Stories & Acceptance Criteria</h3>
+                <p class="text-sm text-slate-500 mb-4">คลิกที่แต่ละรายการเพื่อดูรายละเอียด Acceptance Criteria (เกณฑ์การยอมรับ)</p>
+                
+                <div class="space-y-3">
+                    <!-- US-01 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us1', 'icon1')">
+                            <span>US-01 — ส่งเลขคำสั่งซื้อเพื่อรับ Coin</span>
+                            <span id="icon1" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us1" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-indigo-700 bg-indigo-50 p-2 rounded border border-indigo-100"><strong>User Story:</strong> ในฐานะลูกค้า Marketplace ฉันต้องการส่งเลขคำสั่งซื้อจาก Shopee/Lazada ผ่าน LINE OA เพื่อให้ฉันได้รับ Loyalty Coins</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>เข้าฟอร์มยืนยันคำสั่งซื้อจาก LINE OA Rich Menu ได้</li>
+                                <li>กรอกเลขคำสั่งซื้อของ Shopee หรือ Lazada ได้</li>
+                                <li>ระบบตรวจสอบว่าคำสั่งซื้อมีอยู่จริงและมีสิทธิ์ได้รับ Coin</li>
+                                <li><strong class="text-rose-500">ระบบป้องกันการใช้เลขซ้ำ</strong> เพื่อรับ Coin</li>
+                                <li>หากสำเร็จ: เพิ่ม Coin ให้บัญชีและแสดงข้อความสำเร็จ</li>
+                                <li>หากไม่สำเร็จ: แสดงสถานะข้อผิดพลาด เช่น "คำสั่งซื้อไม่ถูกต้อง" หรือ "ถูกใช้ไปแล้ว"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- US-02 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us2', 'icon2')">
+                            <span>US-02 — สมัครสมาชิกหรือเข้าสู่ระบบเพื่อเชื่อมบัญชี</span>
+                            <span id="icon2" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us2" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-indigo-700 bg-indigo-50 p-2 rounded border border-indigo-100"><strong>User Story:</strong> ในฐานะลูกค้า ฉันต้องการสมัครสมาชิกหรือเข้าสู่ระบบบน Topvalue.com เพื่อให้คำสั่งซื้อถูกเชื่อมกับบัญชีสมาชิก</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>สมัครใหม่หรือเข้าสู่ระบบด้วยบัญชีเดิมได้</li>
+                                <li>เชื่อมคำสั่งซื้อที่ verify แล้วเข้ากับบัญชีสมาชิกอัตโนมัติ</li>
+                                <li><strong class="text-rose-500">ไม่อนุญาต</strong>ให้คำสั่งซื้อเดียวกันถูกเชื่อมกับหลายบัญชี</li>
+                                <li>แสดงข้อความยืนยันเมื่อเชื่อมบัญชีสำเร็จ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- US-03 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us3', 'icon3')">
+                            <span>US-03 — ดูยอดคงเหลือของ Coin</span>
+                            <span id="icon3" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us3" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-indigo-700 bg-indigo-50 p-2 rounded border border-indigo-100"><strong>User Story:</strong> ในฐานะลูกค้า ฉันต้องการดูยอดคงเหลือของ Coin เพื่อให้ทราบว่าสามารถนำไปแลกคูปองได้หรือไม่</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>ดูยอด Coin คงเหลือจากหน้า Member Dashboard ได้อย่างชัดเจน</li>
+                                <li>แสดงประวัติการได้รับหรือใช้ Coin ได้</li>
+                                <li>ยอดต้องอัปเดตทันทีแบบ Real-time</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- US-04 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us4', 'icon4')">
+                            <span>US-04 — แลก Coin เป็นคูปองส่วนลด</span>
+                            <span id="icon4" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us4" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-indigo-700 bg-indigo-50 p-2 rounded border border-indigo-100"><strong>User Story:</strong> ในฐานะลูกค้า ฉันต้องการแลก Coin เป็นคูปองส่วนลด เพื่อนำไปใช้สั่งซื้อครั้งถัดไป</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>ดูตัวเลือกคูปองที่แลกได้ตามเงื่อนไข</li>
+                                <li>ระบบตรวจสอบว่ามี Coin เพียงพอก่อนทำรายการ</li>
+                                <li>เมื่อแลกสำเร็จ: ตัด Coin และสร้างคูปองให้ทันที</li>
+                                <li>แสดงคูปองและสถานะพร้อมใช้งานในระบบของลูกค้า</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- US-05 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us5', 'icon5')">
+                            <span>US-05 — ลงทะเบียนรับประกันสินค้า</span>
+                            <span id="icon5" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us5" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-indigo-700 bg-indigo-50 p-2 rounded border border-indigo-100"><strong>User Story:</strong> ในฐานะลูกค้า ฉันต้องการลงทะเบียนรับประกันสินค้าจากคำสั่งซื้อที่ได้รับการยืนยันแล้ว</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>ลงทะเบียนได้เฉพาะสินค้าจากคำสั่งซื้อที่ Verify ผ่านแล้ว</li>
+                                <li>บันทึกการรับประกันผูกกับ Member Account อัตโนมัติ</li>
+                                <li>ตรวจสอบสถานะและวันหมดอายุของการรับประกันได้ในระบบ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- US-06 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us6', 'icon6')">
+                            <span>US-06 — ตรวจสอบสถานะ (สำหรับ Admin/CS)</span>
+                            <span id="icon6" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us6" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-amber-700 bg-amber-50 p-2 rounded border border-amber-100"><strong>User Story:</strong> ในฐานะเจ้าหน้าที่บริการลูกค้า ฉันต้องการตรวจสอบว่าคำสั่งซื้อเคยถูกใช้เพื่อรับ Coin แล้วหรือไม่</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>ค้นหาข้อมูลด้วย Order Number ได้</li>
+                                <li>แสดงสถานะชัดเจน (ถูกใช้แล้ว, ยังไม่ถูกใช้, ไม่ถูกต้อง)</li>
+                                <li>แสดงเวลาที่ใช้สิทธิ์และบัญชีที่เชื่อมโยงอยู่ เพื่อใช้ซัพพอร์ตลูกค้าอย่างรวดเร็ว</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- US-07 -->
+                    <div class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                        <button class="w-full text-left p-4 hover:bg-slate-50 font-bold text-slate-700 flex justify-between items-center transition-colors focus:outline-none" onclick="toggleAccordion('us7', 'icon7')">
+                            <span>US-07 — ติดตามเหตุการณ์สำคัญทางการค้า (Analytics)</span>
+                            <span id="icon7" class="text-slate-400 transform transition-transform">&#9660;</span>
+                        </button>
+                        <div id="us7" class="hidden p-4 border-t border-slate-100 bg-slate-50 text-sm">
+                            <p class="mb-3 text-sky-700 bg-sky-50 p-2 rounded border border-sky-100"><strong>User Story:</strong> ในฐานะผู้ดูแลการตลาด ฉันต้องการให้ระบบติดตามเหตุการณ์สำคัญทางการค้า เพื่อใช้วัดผลแคมเปญ</p>
+                            <h4 class="font-bold text-slate-800 mb-2">Acceptance Criteria:</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li>ติดตามครบทุก Events หลัก: view, add-to-cart, checkout, purchase, แลกคูปอง, ลงประกัน</li>
+                                <li>ส่งข้อมูลไปยัง Analytics tools พร้อมพารามิเตอร์ที่ถูกต้อง</li>
+                                <li>ข้อมูลพร้อมใช้งานเพื่อการวิเคราะห์ Conversion & Attribution</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UAT Scenarios & Strategic Execution Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
                 <div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Functional Requirements</h3>
-                    <div class="space-y-4">
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
-                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-01: Order Verification</div>
-                            <p class="text-sm text-slate-600">API ต้องตรวจสอบ Order ID กับฐานข้อมูลว่ามีอยู่จริง, ถูกต้อง, สถานะ Completed และต้อง <strong class="text-rose-500">บล็อกการใช้ซ้ำ (Duplicate Claim)</strong> อย่างเด็ดขาด</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
-                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-02: Member Authentication</div>
-                            <p class="text-sm text-slate-600">ระบบต้องรองรับ Seamless Login (เช่น LINE Login) หรือการสมัครใหม่ และจับคู่ Order ID เข้ากับ User ID ในระบบ CRM โดยอัตโนมัติ</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
-                            <div class="font-bold text-indigo-700 text-sm mb-1">FR-03: Reward Logic</div>
-                            <p class="text-sm text-slate-600">เมื่อผูกสำเร็จ ระบบคำนวณ Coin ตาม Business Logic และเพิ่มยอดเข้า Wallet ทันที <strong class="text-amber-600">1 Order รับสิทธิ์ได้เพียง 1 ครั้งเท่านั้น</strong></p>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 hover:border-emerald-300 transition-colors">
-                            <div class="font-bold text-emerald-700 text-sm mb-1">FR-04: Event Tracking (Analytics)</div>
-                            <p class="text-sm text-slate-600">ต้องฝัง GTM (Google Tag Manager) เพื่อเก็บ Events: <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">view_verification_page</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">verify_success</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">register_success</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-pink-600">coin_redeemed</code> เพื่อวัดผล Attribution</p>
-                        </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">UAT Scenarios Checklist</h3>
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> กรอก Order ถูกต้อง+ยังไม่ใช้สิทธิ์ &rarr; <strong class="text-emerald-600 ml-1">ได้ Coin</strong></li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> กรอก Order ซ้ำ &rarr; <strong class="text-rose-600 ml-1">ระบบ Block</strong></li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> กรอก Order ผิดรูปแบบ/ไม่มีอยู่จริง &rarr; <strong class="text-rose-600 ml-1">แสดง Error Message</strong></li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> Login ระบบเดิม &rarr; ผูก Account สำเร็จ</li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> สมัครสมาชิกใหม่ &rarr; ผูก Account สำเร็จ</li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> ลูกค้ากด Activate Warranty ได้สำเร็จ</li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> แลก Coupon สำเร็จ <strong class="text-emerald-600 mx-1">เมื่อ Coin เพียงพอ</strong></li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> แลก Coupon ไม่สำเร็จ <strong class="text-rose-600 mx-1">เมื่อ Coin ไม่พอ</strong></li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> นำ Coupon ไปใช้ Checkout สำเร็จ</li>
+                            <li class="flex items-start"><input type="checkbox" class="mt-1 mr-3 accent-indigo-600"> Tracking Event ยิงครบทุก Step (Network tab)</li>
+                        </ul>
                     </div>
                 </div>
 
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Strategic Execution (บทบาทและการดำเนินการเชิงกลยุทธ์)</h3>
-                    <div class="bg-slate-800 text-slate-300 p-6 rounded-xl shadow-md">
+                    <div class="bg-slate-800 text-slate-300 p-6 rounded-xl shadow-md h-full">
                         <p class="text-sm mb-4 text-slate-400">ในฐานะผู้นำการวิเคราะห์และประสานงานระบบ บทบาทและการดำเนินการเชิงกลยุทธ์ประกอบด้วย:</p>
                         <ul class="space-y-4">
                             <li class="flex items-start">
@@ -577,7 +788,7 @@
                                 <div>
                                     <div class="font-bold text-white text-sm">Requirement Orchestration</div>
                                     <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">บริหารจัดการความต้องการของระบบ</div>
-                                    <div class="text-xs text-slate-400">เป็นแกนนำในการรวบรวมและวิเคราะห์ความต้องการจากผู้มีส่วนได้ส่วนเสียทุกฝ่าย (Marketing, Operations, Customer Service และ Development) เพื่อผสานเป้าหมายทางธุรกิจเข้ากับความเป็นไปได้ทางเทคนิค (Technical Feasibility)</div>
+                                    <div class="text-xs text-slate-400">รวบรวมและวิเคราะห์ความต้องการจาก Stakeholders (Marketing, Ops, CS, Dev) ผสานเป้าหมายธุรกิจกับความเป็นไปได้ทางเทคนิค</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -585,7 +796,7 @@
                                 <div>
                                     <div class="font-bold text-white text-sm">Journey Analysis & Workflow Design</div>
                                     <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">วิเคราะห์และออกแบบระบบ</div>
-                                    <div class="text-xs text-slate-400">วิเคราะห์ Customer Journey จากฝั่ง Marketplace เพื่อระบุช่องโหว่ของการเก็บข้อมูลลูกค้า (Data & Retention Gaps) และออกแบบโครงสร้างการทำงาน (Workflow) ใหม่สำหรับระบบ CRM และ Loyalty อย่างไร้รอยต่อ</div>
+                                    <div class="text-xs text-slate-400">วิเคราะห์ Journey ระบุช่องโหว่ Data Gaps และออกแบบ Workflow ใหม่สำหรับ CRM และ Loyalty</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -593,7 +804,7 @@
                                 <div>
                                     <div class="font-bold text-white text-sm">Business-to-Tech Translation</div>
                                     <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">แปลงกลยุทธ์เป็นเอกสารทางเทคนิค</div>
-                                    <div class="text-xs text-slate-400">ถอดรหัส Business Logic ที่ซับซ้อนให้อยู่ในรูปแบบ AS-IS & TO-BE Process Flows, User Stories, Business Rules และ UAT Scenarios เพื่อให้ทีมพัฒนาเข้าใจโครงสร้างและขอบเขตงานอย่างชัดเจน</div>
+                                    <div class="text-xs text-slate-400">ถอดรหัส Business Logic ให้เป็น Process Flows, User Stories, Business Rules และ UAT ให้ทีม Dev เข้าใจขอบเขตชัดเจน</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -601,7 +812,7 @@
                                 <div>
                                     <div class="font-bold text-white text-sm">Feature Definition & Data Logic</div>
                                     <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">กำหนดโครงสร้างฟีเจอร์และข้อมูล</div>
-                                    <div class="text-xs text-slate-400">ออกแบบ Requirement เชิงลึกสำหรับฟีเจอร์หลัก เช่น ระบบตรวจสอบคำสั่งซื้อข้ามแพลตฟอร์ม (Order Verification), การเชื่อมโยงบัญชีสมาชิก, โลจิกการจ่ายรางวัล (Reward Logic) และวางโครงสร้าง Analytics Tracking</div>
+                                    <div class="text-xs text-slate-400">ออกแบบ Req เชิงลึกเช่น Order Verification, Member Linkage, Reward Logic และ Analytics Tracking</div>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -609,7 +820,7 @@
                                 <div>
                                     <div class="font-bold text-white text-sm">Bridging the Technical Gap</div>
                                     <div class="text-xs text-indigo-300 mt-0.5 mb-1 font-medium">เชื่อมโยงฝั่งธุรกิจและระบบหลังบ้าน</div>
-                                    <div class="text-xs text-slate-400">ทำหน้าที่เป็นศูนย์กลางประสานงานข้ามสายงาน (Cross-functional alignment) โดยดูแลความถูกต้องของการออกแบบ Data Mapping และ API Integration เพื่อให้มั่นใจว่าระบบพร้อมสำหรับการนำไปพัฒนาจริง</div>
+                                    <div class="text-xs text-slate-400">ศูนย์กลางประสานงานข้ามสายงาน ควบคุมความถูกต้อง Data Mapping & API ให้พร้อมพัฒนาจริง</div>
                                 </div>
                             </li>
                         </ul>
@@ -694,6 +905,20 @@
                     btn.classList.remove('border-transparent');
                 }
             });
+        }
+
+        // Toggle User Stories Accordion
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
         }
 
         function initChart() {
